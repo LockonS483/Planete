@@ -26,6 +26,9 @@ public class PlayerScript : PhysicsObject
     Vector3 oLocalScale;
     Vector3 dashLocalScale;
     public Transform scalepoint;
+    float oGravMod;
+
+    public bool dashing = false;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +40,7 @@ public class PlayerScript : PhysicsObject
         oLocalScale = transform.localScale;
         dashLocalScale = oLocalScale;
         dashLocalScale.y *= 0.5f;
+        oGravMod = gravityModifier;
     }
 
     // Update is called once per frame
@@ -45,7 +49,7 @@ public class PlayerScript : PhysicsObject
         ComputeVelocity();
 
         if(cDashCooldown > 0){
-            cDashCooldown -= Time.deltaTime;
+            if(grounded) cDashCooldown -= Time.deltaTime;
         }
     }
 
@@ -54,25 +58,34 @@ public class PlayerScript : PhysicsObject
         ground = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up);
 
         
-        if(Mathf.Abs(launch) >= 0.11f){
+        if(Mathf.Abs(launch) >= 0.2f){
             ScaleAround(transform, scalepoint, Vector3.Lerp(transform.localScale, dashLocalScale, 1f));
             move.x = launch;
-            launch -= (launch / Mathf.Abs(launch)) * Time.deltaTime * 3.5f;
+            launch -= (launch / Mathf.Abs(launch)) * Time.deltaTime * 6f;
+            velocity.y = 0;
+            gravityModifier = oGravMod / 3f;
+            dashing = true;
         }else{
             ScaleAround(transform, scalepoint, Vector3.Lerp(transform.localScale, oLocalScale, 1f));
             move.x = Input.GetAxis("Horizontal") + launch;
             launch = 0;
+            dashing = false;
+
+            gravityModifier = oGravMod;
         }
 
         if(frozen) return;
         
         if(Input.GetButtonDown("Jump")){
             //print("JUMPP");
-            if(grounded && !jumping){
-                Jump(1f);
-            }else if(canDoubleJump){
-                Jump(1f);
-                canDoubleJump = false;
+            if(!dashing){
+                if(grounded && !jumping){
+                    Jump(1f);
+                    Refresh(true, false);
+                }else if(canDoubleJump){
+                    Jump(1f);
+                    canDoubleJump = false;
+                }
             }
         }
 
@@ -121,5 +134,19 @@ public class PlayerScript : PhysicsObject
         target.localScale = scale;
         target.position += pivotPos - pivot.position;
         pivot.parent = pivotParent;
+     }
+
+     public void Refresh(bool rDash, bool rJump){
+        if(rDash) cDashCooldown = 0;
+        if(rJump) canDoubleJump = true;
+     }
+
+     public void JumpPad(float multi){
+        Jump(multi);
+     }
+
+     public void CancelDash(){
+        launch = 0;
+        dashing = false; 
      }
 }
