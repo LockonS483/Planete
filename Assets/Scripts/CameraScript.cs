@@ -26,8 +26,10 @@ public class CameraScript : MonoBehaviour
             offset.y = 0;
         }
         targetV = pt.position + offset;
-        
+
         //transform.position = Vector3.Slerp(transform.position, targetV, followSpeed);
+
+        //Debug.Log(pt.position.x);
     }
 
     void FixedUpdate(){
