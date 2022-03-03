@@ -31,6 +31,8 @@ public class PlayerScript : PhysicsObject
 
     public bool dashing = false;
 
+    Vector3 start_pos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,8 @@ public class PlayerScript : PhysicsObject
         dashLocalScale = oLocalScale;
         dashLocalScale.y *= 0.5f;
         oGravMod = gravityModifier;
+
+        start_pos = transform.position;
     }
 
     // Update is called once per frame
@@ -51,6 +55,13 @@ public class PlayerScript : PhysicsObject
 
         if(cDashCooldown > 0){
             if(grounded) cDashCooldown -= Time.deltaTime;
+        }
+
+
+        //tp back to start position
+        if (transform.position.y <= -8)
+        {
+            transform.position = start_pos;
         }
 
         //print(transform.position);
