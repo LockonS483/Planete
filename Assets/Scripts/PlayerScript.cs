@@ -33,6 +33,8 @@ public class PlayerScript : PhysicsObject
 
     public Vector3 start_pos;
 
+    bool dGrounded = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,15 +66,21 @@ public class PlayerScript : PhysicsObject
             transform.position = start_pos;
         }
 
+        if(grounded){
+            if(!dGrounded) cDashCooldown = 0;
+        }
+        dGrounded = grounded;
+
         //print(transform.position);
 
     }
 
     protected void ComputeVelocity(){
+        if(frozen) return;
+        
         Vector2 move = Vector2.zero;
         ground = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up);
 
-        
         if(Mathf.Abs(launch) >= 0.2f){
             ScaleAround(transform, scalepoint, Vector3.Lerp(transform.localScale, dashLocalScale, 1f));
             move.x = launch;
@@ -88,8 +96,6 @@ public class PlayerScript : PhysicsObject
 
             gravityModifier = oGravMod;
         }
-
-        if(frozen) return;
         
         if(Input.GetButtonDown("Jump")){
             //print("JUMPP");

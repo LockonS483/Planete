@@ -24,6 +24,7 @@ public class JumpPad : MonoBehaviour
                 p.CancelDash();
             }
             p.JumpPad(power);
+            p.Refresh(true, true);
         }
     }
 }
