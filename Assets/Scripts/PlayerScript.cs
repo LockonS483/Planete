@@ -31,7 +31,7 @@ public class PlayerScript : PhysicsObject
 
     public bool dashing = false;
 
-    Vector3 start_pos;
+    public Vector3 start_pos;
 
     // Start is called before the first frame update
     void Start()
@@ -135,7 +135,7 @@ public class PlayerScript : PhysicsObject
     }
 
     protected void Jump(float multi){
-        Debug.Log("JUMP");
+        //Debug.Log("JUMP");
         if(velocity.y != jumpPower){
             velocity.y = jumpPower * multi;
             jumping = true;
@@ -167,13 +167,24 @@ public class PlayerScript : PhysicsObject
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        print("touch door");
+        
         if (other.gameObject.name == "Door1")
         {
             //go to next level
             SceneManager.LoadScene(sceneName: "level2");
-            
-        }
 
+        }
+        if (other.gameObject.name == "Door2")
+        {
+            print("touch door");
+            //go to next level
+            SceneManager.LoadScene(sceneName: "end");
+
+        }
+        if (other.gameObject.tag == "spawn_pt")
+        {
+            start_pos = other.transform.position;
+            start_pos.y += 10;
+        }
     }
 }
