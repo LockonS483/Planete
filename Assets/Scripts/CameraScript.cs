@@ -6,6 +6,7 @@ public class CameraScript : MonoBehaviour
 {
     public Transform pt;
     PlayerScript p;
+
     public Vector3 offset;
     public float followSpeed;
     Vector3 targetV;
@@ -13,6 +14,7 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         p = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
+        
     }
 
     // Update is called once per frame
@@ -24,6 +26,7 @@ public class CameraScript : MonoBehaviour
             offset.y = 0;
         }
         targetV = pt.position + offset;
+        
         //transform.position = Vector3.Slerp(transform.position, targetV, followSpeed);
     }
 

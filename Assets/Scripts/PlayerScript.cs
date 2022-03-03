@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : PhysicsObject
 {
@@ -51,6 +52,9 @@ public class PlayerScript : PhysicsObject
         if(cDashCooldown > 0){
             if(grounded) cDashCooldown -= Time.deltaTime;
         }
+
+        //print(transform.position);
+
     }
 
     protected void ComputeVelocity(){
@@ -149,4 +153,16 @@ public class PlayerScript : PhysicsObject
         launch = 0;
         dashing = false; 
      }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        print("touch door");
+        if (other.gameObject.name == "Door1")
+        {
+            //go to next level
+            SceneManager.LoadScene(sceneName: "level2");
+            
+        }
+
+    }
 }
